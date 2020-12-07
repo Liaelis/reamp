@@ -3,8 +3,10 @@ import br.com.elisscherer.reamp.openweathermap.List;
 import br.com.elisscherer.reamp.openweathermap.WeatherResponse;
 import br.com.elisscherer.reamp.openweathermap.Weather;
 import br.com.elisscherer.reamp.model.Cidade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
@@ -13,11 +15,23 @@ import java.util.Optional;
 @Repository
 public class PrevisaoRepository {
 
+    RetryTemplate retryTemplate;
+
+    @Autowired
+    public PrevisaoRepository(RetryTemplate retryTemplate) {
+        this.retryTemplate = retryTemplate;
+    }
+
+
+
     public Optional<Cidade> findPrevisaoByCidade(String nomecidade){
         RestTemplate restTemplate = new RestTemplate();
         String prefixUrl ="http://api.openweathermap.org/data/2.5/find?q=";
-        String sufixUrl ="&units=metric&appid={key}lang=pt_br";
-        ResponseEntity<WeatherResponse> response = restTemplate.getForEntity(prefixUrl+nomecidade+sufixUrl, WeatherResponse.class);
+        String sufixUrl ="&units=metric&appid={key}&lang=pt_br";
+        ResponseEntity<WeatherResponse> response =
+                retryTemplate.execute(arg0 ->
+                restTemplate.getForEntity(prefixUrl+nomecidade+sufixUrl, WeatherResponse.class));
+
         if(response.getStatusCode() == HttpStatus.OK){
 
             WeatherResponse resp = response.getBody();
