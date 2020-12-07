@@ -1,5 +1,5 @@
 
-package br.com.elisscherer.reamp.jsondto;
+package br.com.elisscherer.reamp.openweathermap;
 
 import com.fasterxml.jackson.annotation.*;
 
@@ -13,7 +13,7 @@ import java.util.Map;
     "count",
     "list"
 })
-public class Response {
+public class WeatherResponse {
 
     @JsonProperty("message")
     private String message;

@@ -1,5 +1,5 @@
 
-package br.com.elisscherer.reamp.jsondto;
+package br.com.elisscherer.reamp.openweathermap;
 
 import com.fasterxml.jackson.annotation.*;
 

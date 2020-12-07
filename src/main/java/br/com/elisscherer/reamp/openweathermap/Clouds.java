@@ -1,5 +1,5 @@
 
-package br.com.elisscherer.reamp.jsondto;
+package br.com.elisscherer.reamp.openweathermap;
 
 import com.fasterxml.jackson.annotation.*;
 
@@ -8,23 +8,23 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "country"
+    "all"
 })
-public class Sys {
+public class Clouds {
 
-    @JsonProperty("country")
-    private String country;
+    @JsonProperty("all")
+    private Integer all;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("country")
-    public String getCountry() {
-        return country;
+    @JsonProperty("all")
+    public Integer getAll() {
+        return all;
     }
 
-    @JsonProperty("country")
-    public void setCountry(String country) {
-        this.country = country;
+    @JsonProperty("all")
+    public void setAll(Integer all) {
+        this.all = all;
     }
 
     @JsonAnyGetter
