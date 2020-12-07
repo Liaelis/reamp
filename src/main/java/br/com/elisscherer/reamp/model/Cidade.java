@@ -7,7 +7,7 @@ public class Cidade {
     private Double sensacaoTermica;
     private String descricao;
     private Integer umidade;
-    private Double velocidadeVento;
+
 
     public String getNome() {
         return nome;
@@ -49,11 +49,4 @@ public class Cidade {
         this.umidade = umidade;
     }
 
-    public Double getVelocidadeVento() {
-        return velocidadeVento;
-    }
-
-    public void setVelocidadeVento(Double velocidadeVento) {
-        this.velocidadeVento = velocidadeVento;
-    }
 }

@@ -27,7 +27,6 @@ public class PrevisaoRepository {
             cidade.setTemperatura(li.getMain().getTemp());
             cidade.setSensacaoTermica(li.getMain().getFeelsLike());
             cidade.setUmidade(li.getMain().getHumidity());
-            cidade.setVelocidadeVento(li.getWind().getSpeed());
             for(Weather weather : li.getWeather()){
                 cidade.setDescricao(weather.getDescription());
             }
