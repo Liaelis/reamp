@@ -22,7 +22,7 @@ public class Response {
     @JsonProperty("count")
     private Integer count;
     @JsonProperty("list")
-    private java.util.List<br.com.elis.previsao.dto.List> list = null;
+    private java.util.List<List> list = null;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -57,12 +57,12 @@ public class Response {
     }
 
     @JsonProperty("list")
-    public java.util.List<br.com.elis.previsao.dto.List> getList() {
+    public java.util.List<List> getList() {
         return list;
     }
 
     @JsonProperty("list")
-    public void setList(java.util.List<br.com.elis.previsao.dto.List> list) {
+    public void setList(java.util.List<List> list) {
         this.list = list;
     }
 
