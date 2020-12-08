@@ -27,7 +27,7 @@ public class WeatherRepository {
     public Optional<Cidade> findPrevisaoByCidade(String nomecidade){
         RestTemplate restTemplate = new RestTemplate();
         String prefixUrl ="http://api.openweathermap.org/data/2.5/find?q=";
-        String sufixUrl ="&units=metric&appid=0a89c0f6c40b7c151176d0b464f7e146&lang=pt_br";
+        String sufixUrl ="&units=metric&appid={key}&lang=pt_br";
         ResponseEntity<WeatherResponse> response =
                 retryTemplate.execute(arg0 ->
                 restTemplate.getForEntity(prefixUrl+nomecidade+sufixUrl, WeatherResponse.class));
