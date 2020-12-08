@@ -2,6 +2,7 @@ package br.com.elisscherer.reamp.service;
 
 import br.com.elisscherer.reamp.entity.PrevisaoCidade;
 import br.com.elisscherer.reamp.model.Cidade;
+import br.com.elisscherer.reamp.model.CidadeBuilder;
 import br.com.elisscherer.reamp.repository.PrevisaoRepository;
 import br.com.elisscherer.reamp.repository.WeatherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,64 +20,44 @@ public class PrevisaoService {
     WeatherRepository weatherRepository;
 
 
-    public Optional<Cidade> verificaCache(String nomeCidade){
+    public Optional<Cidade> verificaCache(String nomeCidade) {
 
-        Optional<PrevisaoCidade> opPrevCidadeCache = previsaoRepository.findByNomeCidade(nomeCidade);
-        if(opPrevCidadeCache.isEmpty()){
-          Optional<Cidade> opCidadeAPI = weatherRepository.findPrevisaoByCidade(nomeCidade);
-            System.out.println("estava vazio");
-          if(opCidadeAPI.isEmpty()){
-              return opCidadeAPI;
-          }else{
-              savaEmCache(opCidadeAPI);
-              return opCidadeAPI;
-          }
-        }else{
-            System.out.println("buscou e trouse");
-            Optional<Cidade> opCidade;
-            PrevisaoCidade previsaoCidade = opPrevCidadeCache.get();
-            if(previsaoCidade.getHora().plusMinutes(15).isAfter(LocalDateTime.now())){
-                opCidade= colocaDadosCache(previsaoCidade);
-                System.out.println("pegou da cache");
-                return opCidade;
-            }else{
-              opCidade = weatherRepository.findPrevisaoByCidade(nomeCidade);
-              atualizaDadosCache(opCidade);
-                return opCidade;
-            }
+        Optional<PrevisaoCidade> previsaoCidadeOptional = previsaoRepository.findByNomeCidadeAndHora(nomeCidade, LocalDateTime.now().minusMinutes(15));
+        Cidade cidade = previsaoCidadeOptional.map(this::criarCidade)
+                .orElseGet(() -> {
+                    Optional<Cidade> opCidadeAPI = weatherRepository.findPrevisaoByCidade(nomeCidade);
+                    return opCidadeAPI.map(c -> {
+                        salvarCidade(c);
+                        return c;
+                    }).orElse(null);
+                });
+        return Optional.ofNullable(cidade);
+    }
+    public void salvarCidade(Cidade cidade) {
+        Optional<PrevisaoCidade> previsaoCidadeOptional = previsaoRepository.findByNomeCidade(cidade.getNome());
+        if (previsaoCidadeOptional.isEmpty()) {
+            PrevisaoCidade previsaoCidade = new PrevisaoCidade();
+            previsaoCidade.setNomeCidade(cidade.getNome());
+            previsaoCidade.setTemperatura(cidade.getTemperatura());
+            previsaoCidade.setUmidade(cidade.getUmidade());
+            previsaoCidade.setDescricao(cidade.getDescricao());
+            previsaoCidade.setSensacaoTermica(cidade.getSensacaoTermica());
+            previsaoCidade.setHora(LocalDateTime.now());
+            previsaoRepository.save(previsaoCidade);
+        } else {
+            PrevisaoCidade previsaoCidade = previsaoCidadeOptional.get();
+            previsaoCidade.setHora(LocalDateTime.now());
+            previsaoRepository.save(previsaoCidade);
         }
     }
 
-    public void savaEmCache(Optional<Cidade> opCidadeApi){
-        Cidade cidadeAPI = opCidadeApi.get();
-        PrevisaoCidade previsaoCidade= new PrevisaoCidade();
-        previsaoCidade.setNomeCidade(cidadeAPI.getNome());
-        previsaoCidade.setTemperatura(cidadeAPI.getTemperatura());
-        previsaoCidade.setUmidade(cidadeAPI.getUmidade());
-        previsaoCidade.setDescricao(cidadeAPI.getDescricao());
-        previsaoCidade.setSensacaoTermica(cidadeAPI.getSensacaoTermica());
-        previsaoCidade.setHora(LocalDateTime.now());
-        previsaoRepository.save(previsaoCidade);
-        System.out.println("salvou na cache");
-    }
-
-    private Optional<Cidade> colocaDadosCache(PrevisaoCidade previsaoCidade){
-        Cidade cidade = new Cidade();
-        cidade.setNome(previsaoCidade.getNomeCidade());
-        cidade.setUmidade(previsaoCidade.getUmidade());
-        cidade.setSensacaoTermica(previsaoCidade.getSensacaoTermica());
-        cidade.setTemperatura(previsaoCidade.getTemperatura());
-        cidade.setDescricao(previsaoCidade.getDescricao());
-        Optional<Cidade> optionalCidade = Optional.ofNullable(cidade);
-        return optionalCidade;
-    }
-
-    public void atualizaDadosCache(Optional<Cidade> optionalCidade){
-        Cidade cidade= optionalCidade.get();
-        Optional<PrevisaoCidade> optPreviCidade = previsaoRepository.findByNomeCidade(cidade.getNome());
-        PrevisaoCidade previsaoCidade = optPreviCidade.get();
-        previsaoCidade.setHora(LocalDateTime.now());
-        previsaoRepository.save(previsaoCidade);
-        System.out.println("atualizou hora cache");
+    private Cidade criarCidade(PrevisaoCidade previsaoCidade) {
+        return CidadeBuilder.aCidade()
+                .withNome(previsaoCidade.getNomeCidade())
+                .withUmidade(previsaoCidade.getUmidade())
+                .withDescricao(previsaoCidade.getDescricao())
+                .withSensacaoTermica(previsaoCidade.getSensacaoTermica())
+                .withTemperatura(previsaoCidade.getTemperatura())
+                .build();
     }
 }

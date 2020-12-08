@@ -8,6 +8,16 @@ public class Cidade {
     private String descricao;
     private Integer umidade;
 
+    public Cidade() {
+    }
+
+    public Cidade(String nome, Double temperatura, Double sensacaoTermica, String descricao, Integer umidade) {
+        this.nome = nome;
+        this.temperatura = temperatura;
+        this.sensacaoTermica = sensacaoTermica;
+        this.descricao = descricao;
+        this.umidade = umidade;
+    }
 
     public String getNome() {
         return nome;

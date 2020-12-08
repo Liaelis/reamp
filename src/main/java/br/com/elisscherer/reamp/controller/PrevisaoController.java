@@ -17,12 +17,11 @@ public class PrevisaoController {
     PrevisaoService previsaoService;
 
     @GetMapping("/cidade")
-    public ResponseEntity<Cidade> buscaPrevisao(@RequestBody String cit){
-
-
+    public ResponseEntity<Cidade> buscaPrevisao(@RequestBody String cit) {
+        cit = cit.toLowerCase();
         Optional<Cidade> optionalCidade = previsaoService.verificaCache(cit);
 
-            return ResponseEntity.of(optionalCidade);
+        return ResponseEntity.of(optionalCidade);
 
 
     }
