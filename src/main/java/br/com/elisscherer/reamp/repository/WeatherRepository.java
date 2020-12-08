@@ -1,4 +1,5 @@
 package br.com.elisscherer.reamp.repository;
+
 import br.com.elisscherer.reamp.openweathermap.List;
 import br.com.elisscherer.reamp.openweathermap.WeatherResponse;
 import br.com.elisscherer.reamp.openweathermap.Weather;
@@ -23,39 +24,34 @@ public class WeatherRepository {
     }
 
 
-
-    public Optional<Cidade> findPrevisaoByCidade(String nomecidade){
+    public Optional<Cidade> findPrevisaoByCidade(String nomecidade) {
         RestTemplate restTemplate = new RestTemplate();
-        String prefixUrl ="http://api.openweathermap.org/data/2.5/find?q=";
-        String sufixUrl ="&units=metric&appid={key}&lang=pt_br";
+        String prefixUrl = "http://api.openweathermap.org/data/2.5/find?q=";
+        String sufixUrl = "&units=metric&appid={key}&lang=pt_br";
         ResponseEntity<WeatherResponse> response =
                 retryTemplate.execute(arg0 ->
-                restTemplate.getForEntity(prefixUrl+nomecidade+sufixUrl, WeatherResponse.class));
-
-        if(response.getStatusCode() == HttpStatus.OK){
-
+                        restTemplate.getForEntity(prefixUrl + nomecidade + sufixUrl, WeatherResponse.class));
+        if (response.getStatusCode() == HttpStatus.OK) {
             WeatherResponse resp = response.getBody();
             Optional<Cidade> optionalCidade = objetctPopulation(resp, nomecidade);
-            return  optionalCidade;
-        }else{
-
-            return  Optional.empty();
+            return optionalCidade;
+        } else {
+            return Optional.empty();
         }
 
     }
 
-    public Optional<Cidade> objetctPopulation(WeatherResponse resp,String nomeCidade){
-
-        if(resp==null || resp.getList().isEmpty()) {
+    public Optional<Cidade> objetctPopulation(WeatherResponse resp, String nomeCidade) {
+        if (resp == null || resp.getList().isEmpty()) {
             return Optional.empty();
         }
         Cidade cidade = new Cidade();
-        for(List li : resp.getList()){
+        for (List li : resp.getList()) {
             cidade.setTemperatura(li.getMain().getTemp());
             cidade.setSensacaoTermica(li.getMain().getFeelsLike());
             cidade.setUmidade(li.getMain().getHumidity());
             cidade.setNome(nomeCidade);
-            for(Weather weather : li.getWeather()){
+            for (Weather weather : li.getWeather()) {
                 cidade.setDescricao(weather.getDescription());
             }
         }

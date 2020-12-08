@@ -11,16 +11,16 @@ import org.springframework.retry.support.RetryTemplate;
 @EnableRetry
 public class BeanService {
 
-        @Bean
-        public RetryTemplate retryTemplate() {
-            SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
-            retryPolicy.setMaxAttempts(4);
-            FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
-            backOffPolicy.setBackOffPeriod(3000);
-            RetryTemplate template = new RetryTemplate();
-            template.setRetryPolicy(retryPolicy);
-            template.setBackOffPolicy(backOffPolicy);
-            return template;
-        }
+    @Bean
+    public RetryTemplate retryTemplate() {
+        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
+        retryPolicy.setMaxAttempts(4);
+        FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
+        backOffPolicy.setBackOffPeriod(3000);
+        RetryTemplate template = new RetryTemplate();
+        template.setRetryPolicy(retryPolicy);
+        template.setBackOffPolicy(backOffPolicy);
+        return template;
+    }
 
 }

@@ -1,5 +1,4 @@
 package br.com.elisscherer.reamp.service;
-
 import br.com.elisscherer.reamp.entity.PrevisaoCidade;
 import br.com.elisscherer.reamp.model.Cidade;
 import br.com.elisscherer.reamp.model.CidadeBuilder;
@@ -47,6 +46,10 @@ public class PrevisaoService {
         } else {
             PrevisaoCidade previsaoCidade = previsaoCidadeOptional.get();
             previsaoCidade.setHora(LocalDateTime.now());
+            previsaoCidade.setDescricao(cidade.getDescricao());
+            previsaoCidade.setUmidade(cidade.getUmidade());
+            previsaoCidade.setTemperatura(cidade.getTemperatura());
+            previsaoCidade.setSensacaoTermica(cidade.getSensacaoTermica());
             previsaoRepository.save(previsaoCidade);
         }
     }

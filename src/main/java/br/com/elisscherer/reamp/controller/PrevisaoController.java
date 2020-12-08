@@ -1,7 +1,6 @@
 package br.com.elisscherer.reamp.controller;
 
 import br.com.elisscherer.reamp.model.Cidade;
-import br.com.elisscherer.reamp.repository.WeatherRepository;
 import br.com.elisscherer.reamp.service.PrevisaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
